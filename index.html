@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Text Analyzer</title>
+  <style>
+    body {
+      font-family: Arial;
+      background-color: #f0f0f0;
+      margin: 40px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px gray;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-size: 16px;
+      padding: 10px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #output {
+      margin-top: 20px;
+      background: #eee;
+      padding: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simple Text Analyzer</h1>
+    <textarea id="myText" placeholder="Type or paste your text here..."></textarea><br>
+    <button onclick="analyze()">Analyze</button>
+    <div id="output">
+      <p><i>Result will show here...</i></p>
+    </div>
+  </div>
+
+  <script>
+    function analyze() {
+      var text = document.getElementById("myText").value;
+
+      if (text.trim() === "") {
+        document.getElementById("output").innerHTML = "<p>Please type something first!</p>";
+        return;
+      }
+
+      // Count words
+      var words = text.trim().split(/\s+/);
+      var wordCount = words.length;
+
+      // Count characters (no spaces)
+      var charCount = text.replace(/\s/g, '').length;
+
+      // Word frequency
+      var freq = {};
+      for (var i = 0; i < words.length; i++) {
+        var w = words[i].toLowerCase().replace(/[^a-z]/g, '');
+        if (w !== "") {
+          if (freq[w]) {
+            freq[w]++;
+          } else {
+            freq[w] = 1;
+          }
+        }
+      }
+
+      // Palindromes
+      var palins = [];
+      for (var i = 0; i < words.length; i++) {
+        var w = words[i].toLowerCase().replace(/[^a-z]/g, '');
+        var rev = "";
+        for (var j = w.length - 1; j >= 0; j--) {
+          rev += w[j];
+        }
+        if (w.length > 1 && w === rev && palins.indexOf(w) === -1) {
+          palins.push(w);
+        }
+      }
+
+      // Most frequent word
+      var maxFreq = 0;
+      var  mostWord = [];
+      for (var w in freq) {
+        if (freq[w] > maxFreq) {
+          maxFreq = freq[w];
+          mostWord = [w];
+        } else if (freq[w] === maxFreq) {
+          mostWord.push(w);
+        }
+      }
+
+      // Show result
+      var out = "";
+      out += "<p><b>Total Words:</b> " + wordCount + "</p>";
+      out += "<p><b>Total Characters (no spaces):</b> " + charCount + "</p>";
+      out += "<p><b>Most Frequent Word(s):</b> " + mostWord.join(", ") + " (" + maxFreq + " times)</p>";
+      out += "<p><b>Palindromes:</b> " + (palins.length > 0 ? palins.join(", ") : "None") + "</p>";
+      out += "<p><b>Word Frequencies:</b></p><ul>";
+
+      for (var w in freq)  
+             {
+                  out += "<li>" + w + ": " + freq[w] + "</li>";
+           }
+
+      out += "</ul>";
+      document.getElementById("output").innerHTML = out;
+      
+    }
+  </script>
+</body>
+</html>
